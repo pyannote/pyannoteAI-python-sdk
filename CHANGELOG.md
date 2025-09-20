@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 0.2.1 (2025-09-20)
+
+- fix: fix "missing token" error message
+
 ## Version 0.2.0 (2025-09-09)
 
 - Add support for `Precision-2` model
