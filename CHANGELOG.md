@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Next
+
+- fix: add support for any `Mapping` with an "audio" key (not just `dict`)
+
 ## Version 0.2.1 (2025-09-20)
 
 - fix: fix "missing token" error message
