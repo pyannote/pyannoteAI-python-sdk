@@ -27,7 +27,7 @@ import os
 import time
 import warnings
 from pathlib import Path
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Union, Mapping
 
 import requests
 from requests import Response
@@ -279,7 +279,7 @@ provide it either via `PYANNOTEAI_API_KEY` environment variable or with `token` 
             or "media://{md5-hash-of-audio-file}" otherwise.
         """
 
-        if isinstance(audio, dict):
+        if isinstance(audio, Mapping):
             if "audio" not in audio:
                 raise ValueError(
                     "When `audio` is a dict, it must provide the path to the audio file in 'audio' key."
