@@ -2,7 +2,8 @@
 
 ## Next
 
-- fix: add support for any `Mapping` with an "audio" key (not just `dict`)
+- feat: add support for passing audio as a `{"audio": str | Path}` mapping
+- feat: add support for passing audio as a `{"waveform": np.ndarray | torch.tensor, "sample_rate": int}` mapping
 
 ## Version 0.2.1 (2025-09-20)
 
