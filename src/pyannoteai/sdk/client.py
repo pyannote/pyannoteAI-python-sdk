@@ -24,10 +24,11 @@ import hashlib
 import importlib.metadata
 import io
 import os
+import tempfile
 import time
 import warnings
 from pathlib import Path
-from typing import Callable, Optional, Union, Mapping
+from typing import Callable, Mapping, Optional, Union
 
 import requests
 from requests import Response
@@ -251,7 +252,7 @@ provide it either via `PYANNOTEAI_API_KEY` environment variable or with `token` 
 
     def upload(
         self,
-        audio: str | Path | dict[str, str|Path],
+        audio: str | Path | dict[str, str | Path],
         media_url: Optional[str] = None,
         callback: Optional[Callable] = None,
     ) -> str:
@@ -279,12 +280,39 @@ provide it either via `PYANNOTEAI_API_KEY` environment variable or with `token` 
             or "media://{md5-hash-of-audio-file}" otherwise.
         """
 
+        # whether to delete the audio file after upload. will only be set to True
+        # when audio is provided as a waveform and saved in a temporary file.
+        delete = False
+
         if isinstance(audio, Mapping):
-            if "audio" not in audio:
+            if "audio" in audio:
+                audio = audio["audio"]
+
+            elif "waveform" in audio:
+                delete = True
+                try:
+                    import scipy.io
+                except ImportError:
+                    raise ImportError(
+                        "To process the waveform directly, you need to install `scipy`."
+                    )
+
+                sample_rate = audio["sample_rate"]
+                waveform = audio["waveform"]
+                # common pattern is to provide waveform as a torch tensor.
+                # turn it into a numpy array before passing to scipy.io.wavfile.
+                if hasattr(audio["waveform"], "numpy"):
+                    waveform = audio["waveform"].numpy(force=True)
+
+                # write waveform to a temporary audio file
+                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+                    scipy.io.wavfile.write(f.name, sample_rate, waveform.squeeze())
+                    f.flush()
+                    audio = f.name
+            else:
                 raise ValueError(
                     "When `audio` is a dict, it must provide the path to the audio file in 'audio' key."
                 )
-            audio = audio["audio"]
 
         # get the total size of the file to upload
         # to provide progress information to the hook
@@ -318,6 +346,9 @@ and {{-./}} characters prefixed with 'media://' is allowed."""
 Failed to upload audio to presigned URL {presigned_url}.
 Please check your internet connection or visit https://pyannote.openstatus.dev/ to check the status of the pyannoteAI API."""
             )
+        finally:
+            if delete and os.path.exists(audio):
+                os.remove(audio)
 
         # TODO: handle HTTPError returned by the API
         response.raise_for_status()
