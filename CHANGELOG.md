@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Next
+## Version 0.3.0 (2025-10-10)
 
 - feat: add support for passing audio as a `{"audio": str | Path}` mapping
 - feat: add support for passing audio as a `{"waveform": np.ndarray | torch.tensor, "sample_rate": int}` mapping
