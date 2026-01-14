@@ -423,9 +423,11 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             "turnLevelConfidence": turn_level_confidence,
             "exclusive": exclusive,
             "transcription": transcription,
-            "transcriptionConfig": transcription_config or dict(),
         }
-        
+
+        if transcription_config is not None:
+            json["transcriptionConfig"] = transcription_config
+
         # add extra arguments to the request body
         json.update(kwargs)
 
