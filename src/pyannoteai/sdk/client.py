@@ -370,6 +370,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         turn_level_confidence: bool = False,
         exclusive: bool = False,
         model: str = "precision-2",
+        transcription: bool = False,
+        transcription_config: dict | None = None,
         **kwargs,
     ) -> str:
         """Initiate a diarization job on the pyannoteAI web API
@@ -394,6 +396,10 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             Enable exclusive speaker diarization.
         model : str, optional
             Defaults to "precision-2"
+        transcription : bool, optional
+            Enable STT orchestration.
+        transcription_config : dict, optional
+            STT configuration parameters, including model selection.
         **kwargs : optional
             Extra arguments to send in the body of the request.
 
@@ -416,7 +422,12 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             "confidence": confidence,
             "turnLevelConfidence": turn_level_confidence,
             "exclusive": exclusive,
+            "transcription": transcription,
         }
+
+        if transcription_config is not None:
+            json["transcriptionConfig"] = transcription_config
+
         # add extra arguments to the request body
         json.update(kwargs)
 

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 0.4.0 (2026-01-14)
+
+- feat: add support for STT orchestration
+
 ## Version 0.3.0 (2025-10-10)
 
 - feat: add support for passing audio as a `{"audio": str | Path}` mapping

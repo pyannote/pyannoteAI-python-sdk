@@ -34,6 +34,21 @@ diarization = client.retrieve(job_id)
 
 Use `help(client.diarize)` to learn about options.
 
+## STT orchestration
+
+```python
+# submit a diarization job with STT orchestration
+job_id = client.diarize(
+  media_url, 
+  transcription=True,
+  transcription_config={"model": "parakeet-tdt-0.6b-v3"})
+
+# retrieve speaker-attributed transcription
+orchestration = client.retrieve(job_id)
+# orchestration['output']['turnLevelTranscription'] 
+# orchestration['output']['wordLevelTranscription']
+```
+
 ## Speaker identification
 
 ```python
